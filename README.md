@@ -1,6 +1,6 @@
 # COVAL - COVID-19 Vaccine Appointment Locator
 
-
+** **Pennsylvania Rite Aid Stores ONLY** **
 
 Most pharmacies (e.g. CVS) will tell you where COVID-19 vaccine appointments are available.
 
