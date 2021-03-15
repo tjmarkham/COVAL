@@ -15,7 +15,7 @@ Confirm you are elligible here: https://www.riteaid.com/covid-vaccine-apt
 
 **DO NOT LIE ABOUT OCCUPATION AND/OR MEDICAL CONDITOINS ON THE RITE AID FORM.**
 
-In the `COVAL.py` file, scroll to the `SET ZIP CODE RANGE HERE` section, read the instructions, and set your ZIP code range.
+In the `COVAL.py` file, go to the `SET ZIP CODE RANGE HERE` section, read the instructions, and set your ZIP code range.
 
 Run COVAL using Python 3 from the command line,
 e.g. `python3 COVAL.py`
