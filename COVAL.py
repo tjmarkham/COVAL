@@ -579,7 +579,8 @@ storesWithErrorsCount = len(storesWithErrors)
 
 print('Results:')
 print()
-print('   ', checkedStoreCount, ' out of ', totalStoreCount, ' stores within ZIP code range analyzed (', storesWithErrorsCount, ' errors)', sep = '')
+print('  ', checkedStoreCount, 'stores within ZIP code range located,', storesWithErrorsCount, 'errors')
+print('   (out of ', totalStoreCount, ' possible stores)', sep='')
 print()
 print('  ', storesWithSlotsCount, 'stores with available slots')
 print()
@@ -591,9 +592,7 @@ if (len(storesWithSlots) > 0):
     for resultNumber, store in enumerate(storesWithSlots_sorted, start = 1):
         print('  ', '{: <9}'.format(resultNumber), end = '')
         print('', '   {:0>5} {: >11}'.format(*store))
-else:
-    print('  ', 'None')
+    print()
 
-print()
 print('======================================================================')
 print()
