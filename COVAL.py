@@ -585,7 +585,7 @@ print('  ', storesWithSlotsCount, 'stores with available slots')
 print()
 
 if (len(storesWithSlots) > 0):
-    print('  ', '{: <9} {: >8} {: >11}'.format(*['Result #', 'Store #', 'Zip code']))
+    print('  ', '{: <9} {: >8} {: >11}'.format(*['Result #', 'Store #', 'ZIP code']))
     for resultNumber, store in enumerate(storesWithSlots, start = 1):
         print('  ', '{: <9}'.format(resultNumber), end = '')
         print('', '   {:0>5} {: >11}'.format(*store))
