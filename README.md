@@ -29,4 +29,6 @@ To update the data used by COVAL, follow the instructions in the `SET STORE DATA
 ## Change Log
 
 * v0.1.314
+  * improve results legibility
+* v0.1.314
   * data added 03/14/2021
