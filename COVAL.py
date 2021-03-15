@@ -1,7 +1,8 @@
 import requests
 from datetime import datetime
+from collections import namedtuple
 
-# v0.1.314
+# v0.1.315
 
 # ******************************************************************************
 #                            SET ZIP CODE RANGE HERE
@@ -38,13 +39,13 @@ zipMax = 99999
 #
 # https://www.health.pa.gov/topics/disease/coronavirus/Vaccine/Pages/Distribution.aspx
 #
-# Then use that data to update the variables below (`pfizerStores`,
-# `pfizerZips`, `modernaStores`, `modernaZips`)
+# Then use that data to update the variables below (`pfizerStoreNumbers`,
+# `pfizerZipCodes`, `modernaStoreNumbers`, `modernaZipCodes`)
 #
 
 # Data from "Pfizer-BioNTech Doses to Retail Partners Week of March 8.xlsx"
 # (file updated 3/10/2021)
-pfizerStores = [
+pfizerStoreNumbers = [
     274,
     726,
     1355,
@@ -63,7 +64,7 @@ pfizerStores = [
     11109,
     17783
 ]
-pfizerZips = [
+pfizerZipCodes = [
     15217,
     18505,
     18322,
@@ -85,7 +86,7 @@ pfizerZips = [
 
 # Data from "Rite Aid Week 8.xlsx"
 # (file updated 3/8/2021)
-modernaStores = [
+modernaStoreNumbers = [
     170,
     188,
     205,
@@ -278,7 +279,7 @@ modernaStores = [
     11170,
     12999
 ]
-modernaZips = [
+modernaZipCodes = [
     18301,
     19006,
     17872,
@@ -478,12 +479,18 @@ modernaZips = [
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #*******************************************************************************
 
+Store = namedtuple('Store', 'number zipCode')
+
+def makeListOfStores(list1, list2):
+    tupleLamabda = lambda element1, element2: Store(element1, element2)
+    return list(map(tupleLamabda, list1, list2))
+
 print()
-print('==================================================')
-print('                       COVAL                      ')
-print('       COVID-19 Vaccine Appointment Locator       ')
-print('        Pennsylvania Rite Aid Stores ONLY         ')
-print('==================================================')
+print('======================================================================')
+print('                                 COVAL                                ')
+print('                 COVID-19 Vaccine Appointment Locator                 ')
+print('                  Pennsylvania Rite Aid Stores ONLY                   ')
+print('======================================================================')
 print()
 
 print('Date / time:')
@@ -496,36 +503,39 @@ print()
 print('  ', zipMin, '-', zipMax)
 print()
 
-testStores = [
+testStoreNumbers = [
     274,
     726,
     1355
 ]
+testZipCodes = [
+    15217,
+    18505,
+    18322,
+]
+testStores = makeListOfStores(testStoreNumbers, testZipCodes)
 
-allStores = pfizerStores + modernaStores
-allZips = pfizerZips + modernaZips
-
+allStoreNumbers = pfizerStoreNumbers + modernaStoreNumbers
+allZipCodes = pfizerZipCodes + modernaZipCodes
+allStores = makeListOfStores(allStoreNumbers, allZipCodes)
 closeStores = []
 
-for i, storeNumber in enumerate(allStores):
-    zipCode = allZips[i]
+for store in allStores:
+    zipCode = store.zipCode
     if (zipCode >= zipMin and zipCode <= zipMax):
-        closeStores.append(storeNumber)
+        closeStores.append(store)
 
 storesWithSlot1 = []
 storesWithSlot2 = []
 storesWithErrors = []
-zipsWithSlot1 = []
-zipsWithSlot2 = []
 
 print('Finding slots:')
 
 #storesToCheck = testStores
 storesToCheck = closeStores
 
-for i, storeNumber in enumerate(storesToCheck):
-    zipCode = allZips[i]
-
+for store in storesToCheck:
+    storeNumber = store.number
     url = 'https://www.riteaid.com/services/ext/v2/vaccine/checkSlots?storeNumber=' + str(storeNumber)
     websiteRequest = requests.get(url)
 
@@ -538,8 +548,8 @@ for i, storeNumber in enumerate(storesToCheck):
         #errorMessageDetail = jsonData.get('ErrMsgDtl')
 
         if (status == 'ERROR'):
-            storesWithErrors.append(storeNumber)
-            print('E', end = '', flush=True)
+            storesWithErrors.append(store)
+            print('E', end = '', flush = True)
         else:
             data = jsonData.get('Data')
             slots = data.get('slots')
@@ -547,39 +557,41 @@ for i, storeNumber in enumerate(storesToCheck):
             slot2 = slots.get('2')
 
             if (slot1):
-                storesWithSlot1.append(storeNumber)
-                zipsWithSlot1.append(zipCode)
-                print('1', end = '', flush=True)
+                storesWithSlot1.append(store)
+                print('1', end = '', flush = True)
             elif (slot2):
-                storesWithSlot2.append(storeNumber)
-                zipsWithSlot2.append(zipCode)
-                print('2', end = '', flush=True)
+                storesWithSlot2.append(store)
+                print('2', end = '', flush = True)
             else:
-                print('.', end = '', flush=True)
+                print('.', end = '', flush = True)
     else: # url request failed
-        storesWithErrors.append(storeNumber)
-        print('E', end = '', flush=True)
+        storesWithErrors.append(store)
+        print('E', end = '', flush = True)
 
 print()
 print()
-print('Stores checked:')
+
+storesWithSlots = list(set(storesWithSlot1) | set(storesWithSlot2))
+storesWithSlotsCount = len(storesWithSlots)
+totalStoreCount = len(allStores)
+checkedStoreCount = len(storesToCheck)
+storesWithErrorsCount = len(storesWithErrors)
+
+print('Results:')
 print()
-print('  ', len(storesToCheck))
+print('   ', checkedStoreCount, ' out of ', totalStoreCount, ' stores within ZIP code range analyzed (', storesWithErrorsCount, ' errors)', sep = '')
 print()
-print('   (out of ', len(allStores), ' total stores, ', len(storesWithErrors), ' errors)', sep='')
+print('  ', storesWithSlotsCount, 'stores with available slots')
 print()
 
-zipsWithAnySlots = list(set(zipsWithSlot1) | set(zipsWithSlot2))
-
-print('ZIP codes with available slots:')
-print()
-if (len(zipsWithAnySlots) > 0):
-    print('  ', len(zipsWithAnySlots))
-    print()
-    print('  ', zipsWithAnySlots)
+if (len(storesWithSlots) > 0):
+    print('  ', '{: <9} {: >8} {: >11}'.format(*['Result #', 'Store #', 'Zip code']))
+    for resultNumber, store in enumerate(storesWithSlots, start = 1):
+        print('  ', '{: <9}'.format(resultNumber), end = '')
+        print('', '   {:0>5} {: >11}'.format(*store))
 else:
     print('  ', 'None')
 
 print()
-print('==================================================')
+print('======================================================================')
 print()
