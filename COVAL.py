@@ -481,8 +481,8 @@ modernaZips = [
 print()
 print('==================================================')
 print('                       COVAL                      ')
-print('     The COVID-19 Vaccine Appointment Locator     ')
-print('         Pennsylvania Rite Aid Stores ONLY        ')
+print('       COVID-19 Vaccine Appointment Locator       ')
+print('        Pennsylvania Rite Aid Stores ONLY         ')
 print('==================================================')
 print()
 
