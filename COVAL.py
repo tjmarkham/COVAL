@@ -482,8 +482,8 @@ modernaZipCodes = [
 Store = namedtuple('Store', 'number zipCode')
 
 def makeListOfStores(list1, list2):
-    tupleLamabda = lambda element1, element2: Store(element1, element2)
-    return list(map(tupleLamabda, list1, list2))
+    storeLamabda = lambda element1, element2: Store(element1, element2)
+    return list(map(storeLamabda, list1, list2))
 
 print()
 print('======================================================================')
@@ -586,7 +586,9 @@ print()
 
 if (len(storesWithSlots) > 0):
     print('  ', '{: <9} {: >8} {: >11}'.format(*['Result #', 'Store #', 'ZIP code']))
-    for resultNumber, store in enumerate(storesWithSlots, start = 1):
+    sortOrderLambda = lambda store: (store.zipCode, store.number)
+    storesWithSlots_sorted = sorted(storesWithSlots, key = sortOrderLambda)
+    for resultNumber, store in enumerate(storesWithSlots_sorted, start = 1):
         print('  ', '{: <9}'.format(resultNumber), end = '')
         print('', '   {:0>5} {: >11}'.format(*store))
 else:
