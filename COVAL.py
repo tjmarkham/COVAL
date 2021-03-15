@@ -32,9 +32,6 @@ zipMax = 99999
 #                              SET STORE DATA HERE
 # ******************************************************************************
 #
-# Only PA Rite Aid stores with confirmed vaccine allocation (as of date in
-# `CHANGE LOG` above) are included in the data this program uses.
-#
 # To update the data used by this program, download the latest
 # "Rite Aid - Week X" and "Pfizer Retail Pharmacy Partnership - Week X" Excel
 # files from:
